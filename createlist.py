@@ -21,6 +21,7 @@
 
 DICTFILE = 'wordlist/dutch.txt'
 FREQFILE = 'wordlist/dutch-frequency.txt'
+TYPEFILE = 'wordlist/dutch-type.txt'
 BADWORDSFILE = 'wordlist/dutch-bad.txt'
 FORBIDDEN_CHARS = [' ', '-', '.', ',']
 OUTPUTFILE = 'wordlist/dutch-bip39.txt'
@@ -47,7 +48,6 @@ SIMILAR = (
     ('v', 'w'), ('v', 'y')
 )
 
-wordfreq = {}
 
 def frequency():
     wf = {}
@@ -61,6 +61,19 @@ def frequency():
         except:
             pass
     return wf
+
+def wordtypes():
+    wt = {}
+    f = open(TYPEFILE, 'r')
+    for wl in f.readlines():
+        line = wl.split('/')
+        try:
+            wt.update({
+                line[0].lower(): line[1].replace('\n',''),
+            })
+        except:
+            pass
+    return wt
 
 def similar_words(w1, w2):
     if len(w1) != len(w2):
@@ -99,7 +112,7 @@ def remove_similar(wordlist):
     return newlist
 
 def parselist():
-    global wordfreq
+    global wordfreq, wordtype
     # Read wordlist and list with banned words
     wf = open(DICTFILE, 'rb')
     wordsf = wf.readlines()
@@ -139,7 +152,10 @@ def parselist():
             continue
         if not word in wordfreq:
             continue
-        if word[-2:] == 'en' and word[:-2] in words:
+        if word in wordtype and 'Vi' in wordtype[word]:
+            if word[:-2] in newlist:
+                continue
+        elif word[-2:] == 'en' and word[:-2] in words:
             continue
         if word[-2:] == 'je' and word[:-2] in words:
             continue
@@ -162,10 +178,11 @@ def parselist():
 
 if __name__ == '__main__':
     wordfreq = frequency()
+    wordtype = wordtypes()
     wordlist = parselist()
     wordlist.sort()
 
-    wordlist = remove_similar(wordlist)
+    # wordlist = remove_similar(wordlist)
 
     print(wordlist)
     print(len(wordlist))
