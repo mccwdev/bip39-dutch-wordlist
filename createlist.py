@@ -24,7 +24,7 @@ FREQFILE = 'wordlist/dutch-frequency.txt'
 TYPEFILE = 'wordlist/dutch-type.txt'
 BADWORDSFILE = 'wordlist/dutch-bad.txt'
 FORBIDDEN_CHARS = [' ', '-', '.', ',']
-OUTPUTFILE = 'wordlist/dutch-bip39.txt'
+OUTPUTFILE = 'wordlist/dutch-output.txt'
 SIMILAR = (
     ('a', 'c'), ('a', 'e'), ('a', 'o'),
     ('b', 'd'), ('b', 'h'), ('b', 'p'), ('b', 'q'), ('b', 'r'),
@@ -161,7 +161,13 @@ def parselist():
             continue
         if word[-3:] == 'tje' and word[:-3] in words:
             continue
+        if word[-3:] == 'jes' and word[:-3] in words:
+            continue
+        if word[-3:] == 'ste' and word[:-3] in words:
+            continue
         if word[-2:] == 'dt' and word[:-1] in words:
+            continue
+        if word[-1:] == 's' and word[:-1] in words:
             continue
         if word[:4] != pword[:4]:
             newlist.append(word)
@@ -182,7 +188,7 @@ if __name__ == '__main__':
     wordlist = parselist()
     wordlist.sort()
 
-    # wordlist = remove_similar(wordlist)
+    wordlist = remove_similar(wordlist)
 
     print(wordlist)
     print(len(wordlist))
