@@ -25,29 +25,46 @@ TYPEFILE = 'wordlist/dutch-type.txt'
 BADWORDSFILE = 'wordlist/dutch-bad.txt'
 FORBIDDEN_CHARS = [' ', '-', '\'', '_', '.', ',']
 OUTPUTFILE = 'wordlist/dutch-output.txt'
-MINFREQ = 3
+MINFREQ = 2
 SIMILAR = (
-    ('a', 'c'), ('a', 'e'), ('a', 'o'),
-    ('b', 'd'), ('b', 'h'), ('b', 'p'), ('b', 'q'), ('b', 'r'),
-    ('c', 'e'), ('c', 'g'), ('c', 'n'), ('c', 'o'), ('c', 'q'), ('c', 'u'),
-    ('d', 'g'), ('d', 'h'), ('d', 'o'), ('d', 'p'), ('d', 'q'),
-    ('e', 'f'), ('e', 'o'),
-    ('f', 'i'), ('f', 'j'), ('f', 'l'), ('f', 'p'), ('f', 't'),
-    ('g', 'j'), ('g', 'o'), ('g', 'p'), ('g', 'q'), ('g', 'y'),
-    ('h', 'k'), ('h', 'l'), ('h', 'm'), ('h', 'n'), ('h', 'r'),
-    ('i', 'j'), ('i', 'l'), ('i', 't'), ('i', 'y'),
-    ('j', 'l'), ('j', 'p'), ('j', 'q'), ('j', 'y'),
+    ('a', 'e'), ('a', 'o'),
+    ('b', 'd'), ('b', 'p'),
+    ('c', 'k'),
+    ('d', 'p'),
+    ('e', 'i'), ('e', 'o'),
+    ('f', 'v'),
+    ('h', 'k'),
+    ('i', 'j'), ('i', 'y'),
     ('k', 'x'),
-    ('l', 't'),
     ('m', 'n'), ('m', 'w'),
-    ('n', 'u'), ('n', 'z'),
-    ('o', 'p'), ('o', 'q'), ('o', 'u'), ('o', 'v'),
-    ('p', 'q'), ('p', 'r'),
-    ('q', 'y'),
+    ('n', 'u'),
+    ('o', 'u'),
     ('s', 'z'),
-    ('u', 'v'), ('u', 'w'), ('u', 'y'),
-    ('v', 'w'), ('v', 'y')
+    ('u', 'v'), ('u', 'w'),
+    ('v', 'w'),
 )
+# SIMILAR = (
+#     ('a', 'c'), ('a', 'e'), ('a', 'o'),
+#     ('b', 'd'), ('b', 'h'), ('b', 'p'), ('b', 'q'), ('b', 'r'),
+#     ('c', 'e'), ('c', 'g'), ('c', 'n'), ('c', 'o'), ('c', 'q'), ('c', 'u'),
+#     ('d', 'g'), ('d', 'h'), ('d', 'o'), ('d', 'p'), ('d', 'q'),
+#     ('e', 'f'), ('e', 'o'),
+#     ('f', 'i'), ('f', 'j'), ('f', 'l'), ('f', 'p'), ('f', 't'),
+#     ('g', 'j'), ('g', 'o'), ('g', 'p'), ('g', 'q'), ('g', 'y'),
+#     ('h', 'k'), ('h', 'l'), ('h', 'm'), ('h', 'n'), ('h', 'r'),
+#     ('i', 'j'), ('i', 'l'), ('i', 't'), ('i', 'y'),
+#     ('j', 'l'), ('j', 'p'), ('j', 'q'), ('j', 'y'),
+#     ('k', 'x'),
+#     ('l', 't'),
+#     ('m', 'n'), ('m', 'w'),
+#     ('n', 'u'), ('n', 'z'),
+#     ('o', 'p'), ('o', 'q'), ('o', 'u'), ('o', 'v'),
+#     ('p', 'q'), ('p', 'r'),
+#     ('q', 'y'),
+#     ('s', 'z'),
+#     ('u', 'v'), ('u', 'w'), ('u', 'y'),
+#     ('v', 'w'), ('v', 'y')
+# )
 
 
 def frequency():
@@ -106,7 +123,7 @@ def remove_similar(wordlist):
                         newlist.remove(w2)
                     if not w1 in newlist:
                         newlist.append(w1)
-                    # print("Replace %s(%d) with %s(%d)" % (w2, wordfreq[w2], w1, wordfreq[w1]))
+                    # print("Remove %s(%d), keep %s(%d)" % (w2, wordfreq[w2], w1, wordfreq[w1]))
                     stop_sim_check = True
             if stop_sim_check:
                 continue

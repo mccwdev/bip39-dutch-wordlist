@@ -421,7 +421,6 @@ armere
 armpjes
 art
 assen
-avances
 ave
 back
 bakenen
@@ -434,7 +433,6 @@ begrijp
 behulp
 belgen
 belicht
-bellen
 bemerkt
 bemind
 bemoei
@@ -492,7 +490,6 @@ claus
 clubs
 coca
 cognac
-cola
 com
 combine
 concrete
@@ -1414,3 +1411,4 @@ tour
 ziet
 zijne
 zwarte
+are
