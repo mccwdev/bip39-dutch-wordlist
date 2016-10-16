@@ -23,8 +23,9 @@ DICTFILE = 'wordlist/dutch.txt'
 FREQFILE = 'wordlist/dutch-frequency.txt'
 TYPEFILE = 'wordlist/dutch-type.txt'
 BADWORDSFILE = 'wordlist/dutch-bad.txt'
-FORBIDDEN_CHARS = [' ', '-', '.', ',']
+FORBIDDEN_CHARS = [' ', '-', '\'', '_', '.', ',']
 OUTPUTFILE = 'wordlist/dutch-output.txt'
+MINFREQ = 3
 SIMILAR = (
     ('a', 'c'), ('a', 'e'), ('a', 'o'),
     ('b', 'd'), ('b', 'h'), ('b', 'p'), ('b', 'q'), ('b', 'r'),
@@ -152,6 +153,8 @@ def parselist():
             continue
         if not word in wordfreq:
             continue
+        if wordfreq[word] < MINFREQ:
+            continue
         if word in wordtype and 'Vi' in wordtype[word]:
             if word[:-2] in newlist:
                 continue
@@ -168,6 +171,8 @@ def parselist():
         if word[-2:] == 'dt' and word[:-1] in words:
             continue
         if word[-1:] == 's' and word[:-1] in words:
+            continue
+        if word[-1:] == 'e' and word[:-1] in words:
             continue
         if word[:4] != pword[:4]:
             newlist.append(word)
