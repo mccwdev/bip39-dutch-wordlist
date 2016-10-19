@@ -19,10 +19,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-DICTFILE = 'wordlist/dutch.txt'
-FREQFILE = 'wordlist/dutch-frequency.txt'
-TYPEFILE = 'wordlist/dutch-type.txt'
-BADWORDSFILE = 'wordlist/dutch-bad.txt'
+DICTFILE = 'data/dutch.txt'
+FREQFILE = 'data/dutch-frequency.txt'
+TYPEFILE = 'data/dutch-type.txt'
+BADWORDSFILE = 'data/dutch-bad.txt'
 FORBIDDEN_CHARS = [' ', '-', '\'', '_', '.', ',']
 OUTPUTFILE = 'wordlist/dutch-output.txt'
 MINFREQ = 2
