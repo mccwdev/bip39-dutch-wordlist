@@ -20,6 +20,7 @@
 #
 
 DICTFILE = 'data/dutch.txt'
+DICTFILE2 = 'data/SONAR500.lemmaposfreqlist.1-gram.total.top5000.tsv'
 FREQFILE = 'data/dutch-frequency.txt'
 TYPEFILE = 'data/dutch-type.txt'
 BADWORDSFILE = 'data/dutch-bad.txt'
