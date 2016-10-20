@@ -38,7 +38,7 @@ DICTFILES = [
     },
 ]
 ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz'
-OUTPUTFILE = 'wordlist/dutch-norm.txt'
+OUTPUTFILE = 'data/dutch-norm.txt'
 MINFREQ = 2
 TYPECONVERT = {
     'Za': 'N',
@@ -48,17 +48,18 @@ TYPECONVERT = {
     'Ab': 'ADJ',
 }
 
+workdir = os.path.dirname(__file__)
+
 
 def create_normalized():
+    global workdir
     rebrackets = re.compile(".*?\((.*?)\)")
-
-    wd = os.path.dirname(__file__)
     normdict = []
     wordcount = 0
     for dictio in DICTFILES:
         dictfile = dictio['file']
         print("Reading and parsing %s" % dictfile)
-        with open('%s/%s' % (wd, dictfile), 'rb') as f:
+        with open('%s/%s' % (workdir, dictfile), 'rb') as f:
             wordlist = [w.strip() for w in f.readlines()]
         print("Found %d words" % len(wordlist))
         for line in wordlist:
@@ -106,19 +107,18 @@ def create_normalized():
                         else:
                             data['frequency'] = wordfreq[data['word']]
                     if 'type' not in data:
-                        if data['word'] not in wordtype:
-                            continue
-                        else:
+                        nt = ''
+                        if data['word'] in wordtype:
                             t = wordtype[data['word']]
-                            nt = ''
                             if 'Za' or 'Zb' in t:
                                 nt = 'N'
                             elif 'Vi' in t:
                                 nt = 'WW'
                             elif 'Aa' or 'Ab' in t:
                                 nt = 'ADJ'
-                            if nt:
-                                data['type'] = nt
+                        if not nt:
+                            continue
+                        data['type'] = nt
                     if data:
                         data.update({'priority': dictio['priority']})
                         normdict.append(data)
@@ -128,6 +128,9 @@ def create_normalized():
 
 if __name__ == '__main__':
     wordlist = create_normalized()
-    from pprint import pprint
-    pprint(wordlist)
-    print(len(wordlist))
+    print("%d word are added to normalized wordlist" % len(wordlist))
+
+    with open('%s/%s' % (workdir, OUTPUTFILE), 'w') as f:
+        for wl in wordlist:
+            line = "%s,%s,%d,%d\n" % (wl['word'], wl['type'], wl['priority'], wl['frequency'])
+            f.write(line)
