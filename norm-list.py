@@ -22,6 +22,7 @@
 import os
 import re
 from wordfreq import wordfreq
+from wordtype import wordtype
 
 DICTFILES = [
     {
@@ -39,6 +40,13 @@ DICTFILES = [
 ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz'
 OUTPUTFILE = 'wordlist/dutch-norm.txt'
 MINFREQ = 2
+TYPECONVERT = {
+    'Za': 'N',
+    'Zb': 'N',
+    'Vi': 'WW',
+    'Aa': 'ADJ',
+    'Ab': 'ADJ',
+}
 
 
 def create_normalized():
@@ -98,9 +106,21 @@ def create_normalized():
                         else:
                             data['frequency'] = wordfreq[data['word']]
                     if 'type' not in data:
-                        # TODO: read type from other table
-                        pass
+                        if data['word'] not in wordtype:
+                            continue
+                        else:
+                            t = wordtype[data['word']]
+                            nt = ''
+                            if 'Za' or 'Zb' in t:
+                                nt = 'N'
+                            elif 'Vi' in t:
+                                nt = 'WW'
+                            elif 'Aa' or 'Ab' in t:
+                                nt = 'ADJ'
+                            if nt:
+                                data['type'] = nt
                     if data:
+                        data.update({'priority': dictio['priority']})
                         normdict.append(data)
 
     return sorted(normdict, key=lambda k: k['word'])

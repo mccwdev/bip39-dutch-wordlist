@@ -21,9 +21,9 @@
 
 import os
 from wordfreq import wordfreq
+from wordtype import wordtype
 
 DICTFILE = 'data/dutch-norm.txt'
-TYPEFILE = 'data/dutch-type.txt'
 BADWORDSFILE = 'data/dutch-bad.txt'
 FORBIDDEN_CHARS = [' ', '-', '\'', '_', '.', ',']
 OUTPUTFILE = 'wordlist/dutch-output.txt'
@@ -68,19 +68,6 @@ SIMILAR = (
 #     ('v', 'w'), ('v', 'y')
 # )
 
-
-def wordtypes():
-    wt = {}
-    f = open(TYPEFILE, 'r')
-    for wl in f.readlines():
-        line = wl.split('/')
-        try:
-            wt.update({
-                line[0].lower(): line[1].replace('\n',''),
-            })
-        except:
-            pass
-    return wt
 
 def similar_words(w1, w2):
     if len(w1) != len(w2):
