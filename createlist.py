@@ -19,8 +19,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os
+from wordfreq import wordfreq
+
 DICTFILE = 'data/dutch-norm.txt'
-FREQFILE = 'data/dutch-frequency.txt'
 TYPEFILE = 'data/dutch-type.txt'
 BADWORDSFILE = 'data/dutch-bad.txt'
 FORBIDDEN_CHARS = [' ', '-', '\'', '_', '.', ',']
@@ -66,19 +68,6 @@ SIMILAR = (
 #     ('v', 'w'), ('v', 'y')
 # )
 
-
-def frequency():
-    wf = {}
-    f = open(FREQFILE, 'r')
-    for wl in f.readlines():
-        line = wl.split('\t')
-        try:
-            wf.update({
-                line[0]: int(line[1]) or 0,
-            })
-        except:
-            pass
-    return wf
 
 def wordtypes():
     wt = {}

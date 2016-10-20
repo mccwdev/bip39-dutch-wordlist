@@ -21,7 +21,7 @@
 
 import os
 import re
-
+from wordfreq import wordfreq
 
 DICTFILES = [
     {
@@ -36,8 +36,6 @@ DICTFILES = [
         'priority': 2,
     },
 ]
-FREQFILE = 'data/dutch-frequency.txt'
-TYPEFILE = 'data/dutch-type.txt'
 ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz'
 OUTPUTFILE = 'wordlist/dutch-norm.txt'
 MINFREQ = 2
@@ -106,8 +104,9 @@ def create_normalized():
 
 
 if __name__ == '__main__':
-    wordlist = create_normalized()
-    for wl in wordlist:
-        print(wl['word'])
-
-    print(len(wordlist))
+    print(wordfreq)
+    # wordlist = create_normalized()
+    # for wl in wordlist:
+    #     print(wl['word'])
+    #
+    # print(len(wordlist))
