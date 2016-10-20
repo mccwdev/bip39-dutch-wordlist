@@ -19,8 +19,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-DICTFILE = 'data/dutch.txt'
-DICTFILE2 = 'data/SONAR500.lemmaposfreqlist.1-gram.total.top5000.tsv'
+DICTFILE = 'data/dutch-norm.txt'
 FREQFILE = 'data/dutch-frequency.txt'
 TYPEFILE = 'data/dutch-type.txt'
 BADWORDSFILE = 'data/dutch-bad.txt'

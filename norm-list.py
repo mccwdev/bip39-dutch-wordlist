@@ -36,11 +36,11 @@ DICTFILES = [
         'priority': 2,
     },
 ]
-
-FORBIDDEN_CHARS = [' ', '-', '\'', '_', '.', ',']
+FREQFILE = 'data/dutch-frequency.txt'
+TYPEFILE = 'data/dutch-type.txt'
+ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz'
 OUTPUTFILE = 'wordlist/dutch-norm.txt'
 MINFREQ = 2
-MAXWORDS = 5000
 
 
 def create_normalized():
@@ -51,8 +51,10 @@ def create_normalized():
     wordcount = 0
     for dictio in DICTFILES:
         dictfile = dictio['file']
+        print("Reading and parsing %s" % dictfile)
         with open('%s/%s' % (wd, dictfile), 'rb') as f:
             wordlist = [w.strip() for w in f.readlines()]
+        print("Found %d words" % len(wordlist))
         for line in wordlist:
             wordcount += 1
             fields = line.split()
@@ -71,29 +73,41 @@ def create_normalized():
                         data = {}
                         break
                     fieldval = fieldval.lower()
-                if fld == 'type':
+                    foundstrangechar = False
+                    for char in fieldval:
+                        if char not in ALLOWED_CHARS:
+                            foundstrangechar = True
+                    if foundstrangechar:
+                        data = {}
+                        break
+                elif fld == 'type':
                     typecom = re.findall(rebrackets, fieldval)[0]
                     fieldval = fieldval.replace("(" + typecom + ")","")
                     if fieldval not in dictio['allowed-types']:
                         data = {}
                         break
-                data.update({
-                    fld: fieldval
-                })
-                i += 1
+                if fieldval:
+                    data.update({
+                        fld: fieldval
+                    })
+                    i += 1
 
             if data:
-                normdict.append(data)
+                if not data['word'] in [nd['word'] for nd in normdict]:
+                    if 'freqency' not in data:
+                        # TODO: read frequency from other table
+                        pass
+                    if 'type' not in data:
+                        # TODO: read type from other table
+                        pass
+                    normdict.append(data)
 
-            if wordcount > MAXWORDS:
-                from pprint import pprint
-                pprint(normdict)
-                import sys
-                print(len(normdict))
-                sys.exit()
-
-
+    return sorted(normdict, key=lambda k: k['word'])
 
 
 if __name__ == '__main__':
-    create_normalized()
+    wordlist = create_normalized()
+    for wl in wordlist:
+        print(wl['word'])
+
+    print(len(wordlist))
