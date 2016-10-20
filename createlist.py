@@ -109,7 +109,17 @@ def parselist():
     # Read wordlist and list with banned words
     wf = open(DICTFILE, 'r')
     dlines = wf.readlines()
-    words = []
+    wordlist = []
+    for dl in dlines:
+        fields = dl.split(',')
+        if len(fields) != 4:
+            raise ValueError("Unknown input line %s" % dl)
+        wordlist.append({
+            'word': fields[0],
+            'type': fields[1],
+            'priority': int(fields[2]),
+            'frequency': int(fields[3]),
+        })
 
     badwords = []
     if BADWORDSFILE:
@@ -123,16 +133,13 @@ def parselist():
     count = 0
     pword = ''
     newlist = []
-    for dl in dlines:
-        fields = dl.split(',')
-        if len(fields) != 4:
-            raise ValueError("Unknown input line %s" % dl)
-        word = fields[0]
-        wtype = fields[1]
-        wprio = int(fields[2])
-        wfreq = int(fields[3])
+    allwords = [x['word'] for x in wordlist]
+    for w in wordlist:
+        word = w['word']
+        wtype = w['type']
+        wfreq = w['frequency']
+        wprio = w['priority']
         if word in badwords:
-            print("badword",word)
             continue
         if wfreq < MINFREQ:
             print("nofreq",word)
@@ -142,21 +149,22 @@ def parselist():
         #         continue
         # elif word[-2:] == 'en' and word[:-2] in words:
         #     continue
-        if word[-2:] == 'je' and word[:-2] in words:
+        if word[-2:] == 'je' and word[:-2] in allwords:
+            continue
+        if word[-3:] == 'tje' and word[:-3] in allwords:
+            continue
+        if word[-3:] == 'jes' and word[:-3] in allwords:
+            continue
+        if word[-3:] == 'ste' and word[:-3] in allwords:
+            continue
+        if word[-2:] == 'dt' and word[:-1] in allwords:
+            continue
+        # if word[-1:] == 's' and word[:-1] in allwords:
+        #     continue
+        # if word[-1:] == 'e' and word[:-1] in allwords:
+        #     continue
+        if len(word) == 3 and word[:3] in [w[:3] for w in allwords]:
             print(word)
-            continue
-        if word[-3:] == 'tje' and word[:-3] in words:
-            print(word)
-            continue
-        if word[-3:] == 'jes' and word[:-3] in words:
-            continue
-        if word[-3:] == 'ste' and word[:-3] in words:
-            continue
-        if word[-2:] == 'dt' and word[:-1] in words:
-            continue
-        if word[-1:] == 's' and word[:-1] in words:
-            continue
-        if word[-1:] == 'e' and word[:-1] in words:
             continue
         if word[:4] != pword[:4]:
             newlist.append(word)

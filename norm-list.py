@@ -40,13 +40,6 @@ DICTFILES = [
 ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz'
 OUTPUTFILE = 'data/dutch-norm.txt'
 MINFREQ = 2
-TYPECONVERT = {
-    'Za': 'N',
-    'Zb': 'N',
-    'Vi': 'WW',
-    'Aa': 'ADJ',
-    'Ab': 'ADJ',
-}
 
 workdir = os.path.dirname(__file__)
 
@@ -91,8 +84,9 @@ def create_normalized():
                     typecom = re.findall(rebrackets, fieldval)[0]
                     fieldval = fieldval.replace("(" + typecom + ")","")
                     if fieldval not in dictio['allowed-types']:
-                        data = {}
-                        break
+                        print(fieldval)
+                    #     data = {}
+                    #     break
                 if fieldval:
                     data.update({
                         fld: fieldval
@@ -110,11 +104,11 @@ def create_normalized():
                         nt = ''
                         if data['word'] in wordtype:
                             t = wordtype[data['word']]
-                            if 'Za' or 'Zb' in t:
+                            if 'Z' in t or 'CA' in t:
                                 nt = 'N'
                             elif 'Vi' in t:
                                 nt = 'WW'
-                            elif 'Aa' or 'Ab' in t:
+                            elif 'Aa' in t or 'Ab' in t:
                                 nt = 'ADJ'
                         if not nt:
                             continue
