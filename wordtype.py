@@ -40,18 +40,5 @@ def wordtypes():
                 pass
     return wt
 
-    #
-    #
-    # wt = {}
-    # f = open(TYPEFILE, 'r')
-    # for wl in f.readlines():
-    #     line = wl.split('/')
-    #     try:
-    #         wt.update({
-    #             line[0].lower(): line[1].replace('\n',''),
-    #         })
-    #     except:
-    #         pass
-    # return wt
 
 wordtype = wordtypes()

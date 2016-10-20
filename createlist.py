@@ -25,7 +25,6 @@ from wordtype import wordtype
 
 DICTFILE = 'data/dutch-norm.txt'
 BADWORDSFILE = 'data/dutch-bad.txt'
-FORBIDDEN_CHARS = [' ', '-', '\'', '_', '.', ',']
 OUTPUTFILE = 'wordlist/dutch-output.txt'
 MINFREQ = 2
 SIMILAR = (
@@ -108,26 +107,9 @@ def remove_similar(wordlist):
 def parselist():
     global wordfreq, wordtype
     # Read wordlist and list with banned words
-    wf = open(DICTFILE, 'rb')
-    wordsf = wf.readlines()
-    wordsf.sort()
+    wf = open(DICTFILE, 'r')
+    dlines = wf.readlines()
     words = []
-    for w in wordsf:
-        try:
-            word = w.decode('utf-8')
-        except:
-            continue
-        word = word.strip('\r\n')
-        if len(word) < 3 or len(word) > 8:
-            continue
-        word = word.lower()
-        for char in FORBIDDEN_CHARS:
-            if word != word.replace(char,''):
-                word = '__stop__'
-                break
-        if word == '__stop__':
-            continue
-        words.append(word)
 
     badwords = []
     if BADWORDSFILE:
@@ -141,21 +123,30 @@ def parselist():
     count = 0
     pword = ''
     newlist = []
-    for word in words:
+    for dl in dlines:
+        fields = dl.split(',')
+        if len(fields) != 4:
+            raise ValueError("Unknown input line %s" % dl)
+        word = fields[0]
+        wtype = fields[1]
+        wprio = int(fields[2])
+        wfreq = int(fields[3])
         if word in badwords:
+            print("badword",word)
             continue
-        if not word in wordfreq:
+        if wfreq < MINFREQ:
+            print("nofreq",word)
             continue
-        if wordfreq[word] < MINFREQ:
-            continue
-        if word in wordtype and 'Vi' in wordtype[word]:
-            if word[:-2] in newlist:
-                continue
-        elif word[-2:] == 'en' and word[:-2] in words:
-            continue
+        # if word in wordtype and 'Vi' in wordtype[word]:
+        #     if word[:-2] in newlist:
+        #         continue
+        # elif word[-2:] == 'en' and word[:-2] in words:
+        #     continue
         if word[-2:] == 'je' and word[:-2] in words:
+            print(word)
             continue
         if word[-3:] == 'tje' and word[:-3] in words:
+            print(word)
             continue
         if word[-3:] == 'jes' and word[:-3] in words:
             continue
@@ -181,11 +172,9 @@ def parselist():
 
 
 if __name__ == '__main__':
-    wordfreq = frequency()
-    wordtype = wordtypes()
     wordlist = parselist()
     wordlist.sort()
-
+    print(len(wordlist))
     wordlist = remove_similar(wordlist)
 
     print(wordlist)
