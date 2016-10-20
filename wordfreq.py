@@ -26,7 +26,20 @@ FREQFILE = 'data/dutch-frequency.txt'
 
 def frequency():
     wd = os.path.dirname(__file__)
+    wf = {}
     with open('%s/%s' % (wd, FREQFILE), 'r') as f:
-        return [w.split('\t') for w in f.readlines()]
+        for l in f.readlines():
+            f = l.split('\t')
+            if len(f[0]) < 2:
+                continue
+            try:
+                if int(f[1]) < 1:
+                    continue
+                wf.update({
+                    f[0].lower(): int(f[1]),
+                })
+            except:
+                pass
+    return wf
 
 wordfreq = frequency()

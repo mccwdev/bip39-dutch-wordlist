@@ -93,20 +93,21 @@ def create_normalized():
             if data:
                 if not data['word'] in [nd['word'] for nd in normdict]:
                     if 'freqency' not in data:
-                        # TODO: read frequency from other table
-                        pass
+                        if data['word'] not in wordfreq or wordfreq[data['word']] < MINFREQ:
+                            continue
+                        else:
+                            data['frequency'] = wordfreq[data['word']]
                     if 'type' not in data:
                         # TODO: read type from other table
                         pass
-                    normdict.append(data)
+                    if data:
+                        normdict.append(data)
 
     return sorted(normdict, key=lambda k: k['word'])
 
 
 if __name__ == '__main__':
-    print(wordfreq)
-    # wordlist = create_normalized()
-    # for wl in wordlist:
-    #     print(wl['word'])
-    #
-    # print(len(wordlist))
+    wordlist = create_normalized()
+    from pprint import pprint
+    pprint(wordlist)
+    print(len(wordlist))
