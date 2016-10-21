@@ -144,10 +144,7 @@ def parselist():
         if wfreq < MINFREQ:
             print("nofreq",word)
             continue
-        # if word in wordtype and 'Vi' in wordtype[word]:
-        #     if word[:-2] in newlist:
-        #         continue
-        # elif word[-2:] == 'en' and word[:-2] in words:
+        # if word[-2:] == 'en' and word[:-2] in allwords:
         #     continue
         if word[-2:] == 'je' and word[:-2] in allwords:
             continue
@@ -159,13 +156,15 @@ def parselist():
             continue
         if word[-2:] == 'dt' and word[:-1] in allwords:
             continue
-        # if word[-1:] == 's' and word[:-1] in allwords:
-        #     continue
-        # if word[-1:] == 'e' and word[:-1] in allwords:
-        #     continue
-        if len(word) == 3 and word[:3] in [w[:3] for w in allwords]:
-            print(word)
+        if word[-1:] == 's' and word[:-1] in allwords:
             continue
+        if word[-1:] == 'e' and word[:-1] in allwords:
+            continue
+        if (len(word) == 3 or len(pword) == 3) and word[:3] == pword[:3]:
+            if wordfreq[word] > wordfreq[pword]:
+                # print("Replace %s(%d) with %s(%d)" % (pword, wordfreq[pword], word, wordfreq[word]))
+                newlist.pop()
+                newlist.append(word)
         if word[:4] != pword[:4]:
             newlist.append(word)
             count += 1
