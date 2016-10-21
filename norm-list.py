@@ -84,9 +84,8 @@ def create_normalized():
                     typecom = re.findall(rebrackets, fieldval)[0]
                     fieldval = fieldval.replace("(" + typecom + ")","")
                     if fieldval not in dictio['allowed-types']:
-                        print(fieldval)
-                    #     data = {}
-                    #     break
+                        data = {}
+                        break
                 if fieldval:
                     data.update({
                         fld: fieldval
@@ -110,12 +109,11 @@ def create_normalized():
                                 nt = 'WW'
                             elif 'Aa' in t or 'Ab' in t:
                                 nt = 'ADJ'
-                        if not nt:
-                            continue
                         data['type'] = nt
                     if data:
                         data.update({'priority': dictio['priority']})
                         normdict.append(data)
+        print("%d words accepted sofar" % len(normdict))
 
     return sorted(normdict, key=lambda k: k['word'])
 

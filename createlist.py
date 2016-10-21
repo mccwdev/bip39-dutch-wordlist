@@ -110,15 +110,14 @@ def parselist():
     wf = open(DICTFILE, 'r')
     dlines = wf.readlines()
     wordlist = []
+    wordprio = {}
     for dl in dlines:
         fields = dl.split(',')
         if len(fields) != 4:
             raise ValueError("Unknown input line %s" % dl)
-        wordlist.append({
-            'word': fields[0],
-            'type': fields[1],
-            'priority': int(fields[2]),
-            'frequency': int(fields[3]),
+        wordlist.append(fields[0])
+        wordprio.update({
+            fields[0]: int(fields[2])
         })
 
     badwords = []
@@ -133,47 +132,56 @@ def parselist():
     count = 0
     pword = ''
     newlist = []
-    allwords = [x['word'] for x in wordlist]
-    for w in wordlist:
-        word = w['word']
-        wtype = w['type']
-        wfreq = w['frequency']
-        wprio = w['priority']
+    # allwords = [x['word'] for x in wordlist]
+    for word in wordlist:
         if word in badwords:
             continue
-        if wfreq < MINFREQ:
+        if wordfreq[word] < MINFREQ:
             print("nofreq",word)
             continue
         # if word[-2:] == 'en' and word[:-2] in allwords:
         #     continue
-        if word[-2:] == 'je' and word[:-2] in allwords:
+        if word[-2:] == 'je' and word[:-2] in wordlist:
             continue
-        if word[-3:] == 'tje' and word[:-3] in allwords:
+        if word[-3:] == 'tje' and word[:-3] in wordlist:
             continue
-        if word[-3:] == 'jes' and word[:-3] in allwords:
+        if word[-3:] == 'jes' and word[:-3] in wordlist:
             continue
-        if word[-3:] == 'ste' and word[:-3] in allwords:
+        if word[-3:] == 'ste' and word[:-3] in wordlist:
             continue
-        if word[-2:] == 'dt' and word[:-1] in allwords:
+        if word[-2:] == 'dt' and word[:-1] in wordlist:
             continue
-        if word[-1:] == 's' and word[:-1] in allwords:
+        if word[-1:] == 's' and word[:-1] in wordlist:
             continue
-        if word[-1:] == 'e' and word[:-1] in allwords:
+        if word[-1:] == 'e' and word[:-1] in wordlist:
             continue
         if (len(word) == 3 or len(pword) == 3) and word[:3] == pword[:3]:
-            if wordfreq[word] > wordfreq[pword]:
+            dopop = False
+            if wordprio[word] < wordprio[pword]:
+                dopop = True
+            elif wordfreq[word] > wordfreq[pword]:
+                 dopop = True
+            if dopop:
                 # print("Replace %s(%d) with %s(%d)" % (pword, wordfreq[pword], word, wordfreq[word]))
                 newlist.pop()
                 newlist.append(word)
-        if word[:4] != pword[:4]:
+            else:
+                continue
+        elif word[:4] != pword[:4]:
             newlist.append(word)
             count += 1
         else:
-            if wordfreq[word] > wordfreq[pword]:
+            dopop = False
+            if wordprio[word] < wordprio[pword]:
+                dopop = True
+            elif wordfreq[word] > wordfreq[pword]:
+                 dopop = True
+            if dopop:
                 # print("Replace %s(%d) with %s(%d)" % (pword, wordfreq[pword], word, wordfreq[word]))
                 newlist.pop()
                 newlist.append(word)
-
+            else:
+                continue
         pword = word
     return newlist
 

@@ -40,5 +40,4 @@ def wordtypes():
                 pass
     return wt
 
-
 wordtype = wordtypes()
