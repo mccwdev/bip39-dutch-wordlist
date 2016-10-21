@@ -139,8 +139,6 @@ def parselist():
         if wordfreq[word] < MINFREQ:
             print("nofreq",word)
             continue
-        # if word[-2:] == 'en' and word[:-2] in allwords:
-        #     continue
         if word[-2:] == 'je' and word[:-2] in wordlist:
             continue
         if word[-3:] == 'tje' and word[:-3] in wordlist:
@@ -150,10 +148,6 @@ def parselist():
         if word[-3:] == 'ste' and word[:-3] in wordlist:
             continue
         if word[-2:] == 'dt' and word[:-1] in wordlist:
-            continue
-        if word[-1:] == 's' and word[:-1] in wordlist:
-            continue
-        if word[-1:] == 'e' and word[:-1] in wordlist:
             continue
         if (len(word) == 3 or len(pword) == 3) and word[:3] == pword[:3]:
             dopop = False
@@ -183,6 +177,12 @@ def parselist():
             else:
                 continue
         pword = word
+
+    for word in newlist:
+        if word[-1:] == 's' and word[:-1] in newlist:
+            newlist.remove(word)
+        if word[-1:] == 'e' and word[:-1] in wordlist:
+            newlist.remove(word)
     return newlist
 
 

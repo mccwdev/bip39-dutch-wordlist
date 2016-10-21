@@ -36,6 +36,11 @@ DICTFILES = [
         'struct': ['word'],
         'priority': 2,
     },
+    {
+        'file': 'data/27_MWC.lemma.txt',
+        'struct': ['word','frequency'],
+        'priority': 2,
+    },
 ]
 ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz'
 OUTPUTFILE = 'data/dutch-norm.txt'
