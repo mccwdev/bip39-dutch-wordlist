@@ -76,6 +76,8 @@ def remove_similar(wordlist):
     newlist = wordlist
     for w1 in wordlist:
         for w2 in wordlist:
+            if w1=='lot' and w2=='lat':
+                print(w1, w2)
             if similar_words(w1, w2):
                 if wordfreq[w1] > wordfreq[w2]:
                     if w2 in newlist:
