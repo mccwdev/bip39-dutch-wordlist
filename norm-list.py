@@ -32,7 +32,7 @@ DICTFILES = [
         'priority': 1,
     },
     {
-        'file': 'data/dutch.txt',
+        'file': 'data/dutch-wordlist.txt',
         'struct': ['word'],
         'priority': 2,
     },

@@ -24,7 +24,8 @@ from wordfreq import wordfreq
 
 DICTFILE = 'data/dutch-norm.txt'
 BADWORDSFILE = 'data/dutch-bad.txt'
-OUTPUTFILE = 'wordlist/dutch-output.txt'
+WORDLISTDIR = 'wordlist'
+OUTPUTFILE = 'dutch-output.txt'
 SIMILAR = (
     ('a', 'e'), ('a', 'o'),
     ('b', 'd'), ('b', 'p'),
@@ -41,28 +42,7 @@ SIMILAR = (
     ('u', 'v'), ('u', 'w'),
     ('v', 'w'),
 )
-# SIMILAR = (
-#     ('a', 'c'), ('a', 'e'), ('a', 'o'),
-#     ('b', 'd'), ('b', 'h'), ('b', 'p'), ('b', 'q'), ('b', 'r'),
-#     ('c', 'e'), ('c', 'g'), ('c', 'n'), ('c', 'o'), ('c', 'q'), ('c', 'u'),
-#     ('d', 'g'), ('d', 'h'), ('d', 'o'), ('d', 'p'), ('d', 'q'),
-#     ('e', 'f'), ('e', 'o'),
-#     ('f', 'i'), ('f', 'j'), ('f', 'l'), ('f', 'p'), ('f', 't'),
-#     ('g', 'j'), ('g', 'o'), ('g', 'p'), ('g', 'q'), ('g', 'y'),
-#     ('h', 'k'), ('h', 'l'), ('h', 'm'), ('h', 'n'), ('h', 'r'),
-#     ('i', 'j'), ('i', 'l'), ('i', 't'), ('i', 'y'),
-#     ('j', 'l'), ('j', 'p'), ('j', 'q'), ('j', 'y'),
-#     ('k', 'x'),
-#     ('l', 't'),
-#     ('m', 'n'), ('m', 'w'),
-#     ('n', 'u'), ('n', 'z'),
-#     ('o', 'p'), ('o', 'q'), ('o', 'u'), ('o', 'v'),
-#     ('p', 'q'), ('p', 'r'),
-#     ('q', 'y'),
-#     ('s', 'z'),
-#     ('u', 'v'), ('u', 'w'), ('u', 'y'),
-#     ('v', 'w'), ('v', 'y')
-# )
+
 
 workdir = os.path.dirname(__file__)
 
@@ -126,11 +106,11 @@ def read_dictionary():
         })
     return wordlist, wordprio
 
-def read_dict_badwords():
+def read_dictfile(file):
     global workdir
-    if BADWORDSFILE:
-        with open('%s/%s' % (workdir, BADWORDSFILE), 'rb') as f:
-            return [l.decode('utf-8').strip('\r\n') for l in f.readlines()]
+    if file:
+        with open('%s/%s' % (workdir, file), 'rb') as f:
+            return [l.decode('utf-8').strip() for l in f.readlines()]
 
 def check_word(word, wordlist):
     suffixs = ['je', 'tje', 'jes', 'ste', 'te', 'dt', 's', 'e']
@@ -155,13 +135,22 @@ def first_word_better(word1, word2):
 
 if __name__ == '__main__':
     wordlist, wordprio = read_dictionary()
-    badwords = read_dict_badwords()
-
+    badwords = read_dictfile(BADWORDSFILE)
+    otherwords = []
+    for fd in os.listdir(workdir+'/'+WORDLISTDIR):
+        if fd == OUTPUTFILE:
+            continue
+        else:
+            with open('%s/wordlist/%s' % (workdir, fd), 'r') as f:
+                otherwords += [w.strip() for w in f.readlines()]
+    print(len(otherwords))
     count = 0
     pword = ''
     newlist = []
     for word in wordlist:
         if word in badwords:
+            continue
+        if word in otherwords:
             continue
         if not check_word(word, wordlist):
             continue
@@ -180,7 +169,7 @@ if __name__ == '__main__':
     newlist.sort()
     newlist = remove_similar(newlist)
 
-    f = open(OUTPUTFILE, 'w')
+    f = open(WORDLISTDIR+'/'+OUTPUTFILE, 'w')
     for w in newlist:
         f.write(w+'\r\n')
 
