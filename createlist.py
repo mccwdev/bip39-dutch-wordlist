@@ -32,7 +32,6 @@ SIMILAR = (
     ('d', 'p'), ('d', 't'),
     ('e', 'i'), ('e', 'o'),
     ('f', 'v'),
-    ('h', 'k'),
     ('i', 'j'), ('i', 'y'),
     ('k', 'x'),
     ('m', 'n'), ('m', 'w'),
@@ -144,34 +143,24 @@ if __name__ == '__main__':
             continue
         if not check_word(word, wordlist):
             continue
-        # Check if word has same 3 or 4 beginning chars as previous word (only works with sorted list!)
-        if (len(word) == 3 or len(pword) == 3) and word[:3] == pword[:3]:
+        # Ensure first 4 characters of a word are unique
+        if word[:4] == pword[:4]:
             if first_word_better(word, pword):
                 newlist.pop()
                 newlist.append(word)
             else:
                 continue
-        elif word[:4] != pword[:4]:
+        else:
             newlist.append(word)
             count += 1
-        else:
-            if first_word_better(word, pword):
-                newlist.pop()
-                newlist.append(word)
-            else:
-                continue
         pword = word
 
-    wordlist = newlist
-
-    wordlist.sort()
-    print(len(wordlist))
-    print(wordlist)
-    wordlist = remove_similar(wordlist)
-
-    print(wordlist)
-    print(len(wordlist))
+    newlist.sort()
+    newlist = remove_similar(newlist)
 
     f = open(OUTPUTFILE, 'w')
-    for w in wordlist:
+    for w in newlist:
         f.write(w+'\r\n')
+
+    print("Created wordlist with %d words" % len(newlist))
+    print("Output writen to %s" % OUTPUTFILE)

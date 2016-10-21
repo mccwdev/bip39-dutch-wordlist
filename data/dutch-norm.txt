@@ -1119,6 +1119,7 @@ dogma,N,2,9
 doken,,2,66
 dokter,N,1,10673
 dol,,2,2355
+dolfijn,,2,83
 dollar,N,1,10288
 dom,ADJ,1,3403
 domein,N,1,136
@@ -1907,6 +1908,7 @@ ginds,ADJ,2,108
 ging,N,2,22047
 gingen,,2,4517
 gips,,2,103
+giraf,,2,31
 gis,,2,11
 gisteren,N,2,5763
 glansde,,2,7
@@ -2285,6 +2287,7 @@ ierse,,2,51
 iets,,2,98181
 ijdel,,2,122
 ijs,N,1,2567
+ijsbeer,,2,44
 ijskoude,,2,97
 ijzer,,2,311
 ijzeren,,2,208
@@ -2710,6 +2713,7 @@ kritiek,N,1,435
 kritisch,ADJ,1,97
 kroeg,N,2,409
 kroegen,,2,49
+krokodil,N,2,213
 kromme,,2,48
 kroop,,2,142
 kruis,N,1,915
@@ -3458,6 +3462,7 @@ oke,N,1,2293
 oktober,,2,428
 olie,N,1,1104
 oliebol,,2,9
+olifant,,2,525
 olijke,,2,5
 oma,N,1,3186
 omarmd,,2,17
@@ -4359,6 +4364,7 @@ slag,N,1,2796
 slagen,WW,1,711
 slager,N,2,290
 slagveld,,2,291
+slang,N,2,944
 slap,,2,311
 slapen,WW,1,9149
 slecht,ADJ,1,11711
@@ -4820,6 +4826,7 @@ tijdens,,2,5888
 tijdig,,2,43
 tijdige,,2,5
 tijdje,,2,2809
+tijger,,2,511
 tik,,2,298
 tikje,,2,188
 tikte,,2,31
