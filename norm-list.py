@@ -36,15 +36,10 @@ DICTFILES = [
         'struct': ['word'],
         'priority': 2,
     },
-    {
-        'file': 'data/27_MWC.lemma.txt',
-        'struct': ['word','frequency'],
-        'priority': 2,
-    },
 ]
 ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz'
 OUTPUTFILE = 'data/dutch-norm.txt'
-MINFREQ = 2
+MINFREQ = 4
 
 workdir = os.path.dirname(__file__)
 

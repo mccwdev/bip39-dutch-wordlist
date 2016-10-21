@@ -21,17 +21,15 @@
 
 import os
 from wordfreq import wordfreq
-from wordtype import wordtype
 
 DICTFILE = 'data/dutch-norm.txt'
 BADWORDSFILE = 'data/dutch-bad.txt'
 OUTPUTFILE = 'wordlist/dutch-output.txt'
-MINFREQ = 2
 SIMILAR = (
     ('a', 'e'), ('a', 'o'),
     ('b', 'd'), ('b', 'p'),
-    ('c', 'k'),
-    ('d', 'p'),
+    ('c', 'k'), ('c', 's'),
+    ('d', 'p'), ('d', 't'),
     ('e', 'i'), ('e', 'o'),
     ('f', 'v'),
     ('h', 'k'),
@@ -40,40 +38,22 @@ SIMILAR = (
     ('m', 'n'), ('m', 'w'),
     ('n', 'u'),
     ('o', 'u'),
-    ('s', 'z'),
+    ('s', 'x'), ('s', 'z'),
     ('u', 'v'), ('u', 'w'),
     ('v', 'w'),
 )
-# SIMILAR = (
-#     ('a', 'c'), ('a', 'e'), ('a', 'o'),
-#     ('b', 'd'), ('b', 'h'), ('b', 'p'), ('b', 'q'), ('b', 'r'),
-#     ('c', 'e'), ('c', 'g'), ('c', 'n'), ('c', 'o'), ('c', 'q'), ('c', 'u'),
-#     ('d', 'g'), ('d', 'h'), ('d', 'o'), ('d', 'p'), ('d', 'q'),
-#     ('e', 'f'), ('e', 'o'),
-#     ('f', 'i'), ('f', 'j'), ('f', 'l'), ('f', 'p'), ('f', 't'),
-#     ('g', 'j'), ('g', 'o'), ('g', 'p'), ('g', 'q'), ('g', 'y'),
-#     ('h', 'k'), ('h', 'l'), ('h', 'm'), ('h', 'n'), ('h', 'r'),
-#     ('i', 'j'), ('i', 'l'), ('i', 't'), ('i', 'y'),
-#     ('j', 'l'), ('j', 'p'), ('j', 'q'), ('j', 'y'),
-#     ('k', 'x'),
-#     ('l', 't'),
-#     ('m', 'n'), ('m', 'w'),
-#     ('n', 'u'), ('n', 'z'),
-#     ('o', 'p'), ('o', 'q'), ('o', 'u'), ('o', 'v'),
-#     ('p', 'q'), ('p', 'r'),
-#     ('q', 'y'),
-#     ('s', 'z'),
-#     ('u', 'v'), ('u', 'w'), ('u', 'y'),
-#     ('v', 'w'), ('v', 'y')
-# )
+
+workdir = os.path.dirname(__file__)
 
 
 def similar_words(w1, w2):
+    # Find words containing similar characters
     if len(w1) != len(w2):
         return False
     if w1 == w2:
         return False
 
+    # Create list with character pairs from first and second word
     diff = []
     for i in range(len(w1)):
         if w1[i] != w2[i]:
@@ -83,11 +63,14 @@ def similar_words(w1, w2):
                 pair = (w2[i], w1[i])
             diff.append(pair)
 
+    # Check if character pair is found in SIMILAR constant pair list
     if len(diff) == 1:
         if list(diff)[0] in SIMILAR:
             return True
+    return False
 
 def remove_similar(wordlist):
+    # Iterate through wordlist and remove words with similar characters and less frequency
     stop_sim_check = False
     newlist = wordlist
     for w1 in wordlist:
@@ -104,13 +87,14 @@ def remove_similar(wordlist):
                 continue
     return newlist
 
-def parselist():
-    global wordfreq, wordtype
-    # Read wordlist and list with banned words
-    wf = open(DICTFILE, 'r')
-    dlines = wf.readlines()
+def read_dictionary():
+    global workdir
     wordlist = []
     wordprio = {}
+
+    # Read words and priority from normalized dictionary file
+    with open('%s/%s' % (workdir, DICTFILE), 'r') as f:
+        dlines = [l for l in f.readlines()]
     for dl in dlines:
         fields = dl.split(',')
         if len(fields) != 4:
@@ -119,44 +103,50 @@ def parselist():
         wordprio.update({
             fields[0]: int(fields[2])
         })
+    return wordlist, wordprio
 
-    badwords = []
+def read_dict_badwords():
+    global workdir
     if BADWORDSFILE:
-        bad_wf = open(BADWORDSFILE, 'rb')
-        badwordsf = bad_wf.readlines()
-        for w in badwordsf:
-            word = w.decode('utf-8')
-            word = word.strip('\r\n')
-            badwords.append(word)
+        with open('%s/%s' % (workdir, BADWORDSFILE), 'rb') as f:
+            return [l.decode('utf-8').strip('\r\n') for l in f.readlines()]
+
+def check_word(word, wordlist):
+    suffixs = ['je', 'tje', 'jes', 'ste', 'te', 'dt', 's', 'e']
+    for suf in suffixs:
+        ls = len(suf)
+        if word[-ls:]==suf and word[:-ls] in wordlist:
+            # print("Keep %s and remove %s with suffix %s" % (word[:-ls], word, suf))
+            return False
+    return True
+
+def first_word_better(word1, word2):
+    # Returns true if the first word has a higher priority or word-frequency
+    global wordprio, wordfreq
+    if wordprio[word1] < wordprio[word2]:
+        # print("Replace %s(%d) with %s(%d)" % (word2, wordfreq[word2], word1, wordfreq[word1]))
+        return True
+    elif wordfreq[word1] > wordfreq[word2]:
+        # print("Replace %s(%d) with %s(%d)" % (word2, wordfreq[word2], word1, wordfreq[word1]))
+        return True
+    return False
+
+
+if __name__ == '__main__':
+    wordlist, wordprio = read_dictionary()
+    badwords = read_dict_badwords()
 
     count = 0
     pword = ''
     newlist = []
-    # allwords = [x['word'] for x in wordlist]
     for word in wordlist:
         if word in badwords:
             continue
-        if wordfreq[word] < MINFREQ:
-            print("nofreq",word)
+        if not check_word(word, wordlist):
             continue
-        if word[-2:] == 'je' and word[:-2] in wordlist:
-            continue
-        if word[-3:] == 'tje' and word[:-3] in wordlist:
-            continue
-        if word[-3:] == 'jes' and word[:-3] in wordlist:
-            continue
-        if word[-3:] == 'ste' and word[:-3] in wordlist:
-            continue
-        if word[-2:] == 'dt' and word[:-1] in wordlist:
-            continue
+        # Check if word has same 3 or 4 beginning chars as previous word (only works with sorted list!)
         if (len(word) == 3 or len(pword) == 3) and word[:3] == pword[:3]:
-            dopop = False
-            if wordprio[word] < wordprio[pword]:
-                dopop = True
-            elif wordfreq[word] > wordfreq[pword]:
-                 dopop = True
-            if dopop:
-                # print("Replace %s(%d) with %s(%d)" % (pword, wordfreq[pword], word, wordfreq[word]))
+            if first_word_better(word, pword):
                 newlist.pop()
                 newlist.append(word)
             else:
@@ -165,31 +155,18 @@ def parselist():
             newlist.append(word)
             count += 1
         else:
-            dopop = False
-            if wordprio[word] < wordprio[pword]:
-                dopop = True
-            elif wordfreq[word] > wordfreq[pword]:
-                 dopop = True
-            if dopop:
-                # print("Replace %s(%d) with %s(%d)" % (pword, wordfreq[pword], word, wordfreq[word]))
+            if first_word_better(word, pword):
                 newlist.pop()
                 newlist.append(word)
             else:
                 continue
         pword = word
 
-    for word in newlist:
-        if word[-1:] == 's' and word[:-1] in newlist:
-            newlist.remove(word)
-        if word[-1:] == 'e' and word[:-1] in wordlist:
-            newlist.remove(word)
-    return newlist
+    wordlist = newlist
 
-
-if __name__ == '__main__':
-    wordlist = parselist()
     wordlist.sort()
     print(len(wordlist))
+    print(wordlist)
     wordlist = remove_similar(wordlist)
 
     print(wordlist)
