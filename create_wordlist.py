@@ -76,16 +76,19 @@ def remove_similar(wordlist):
     newlist = wordlist
     for w1 in wordlist:
         for w2 in wordlist:
-            if w1=='lot' and w2=='lat':
-                print(w1, w2)
             if similar_words(w1, w2):
                 if wordfreq[w1] > wordfreq[w2]:
-                    if w2 in newlist:
-                        newlist.remove(w2)
-                    if not w1 in newlist:
-                        newlist.append(w1)
-                    # print("Remove %s(%d), keep %s(%d)" % (w2, wordfreq[w2], w1, wordfreq[w1]))
-                    stop_sim_check = True
+                    wdel = w2
+                    wnew = w1
+                else:
+                    wdel = w1
+                    wnew = w2
+                if wdel in newlist:
+                    newlist.remove(wdel)
+                if not wnew in newlist:
+                    newlist.append(wnew)
+                print("Remove %s(%d), keep %s(%d)" % (wdel, wordfreq[wdel], wnew, wordfreq[wnew]))
+                stop_sim_check = True
             if stop_sim_check:
                 continue
     return newlist
@@ -145,7 +148,6 @@ if __name__ == '__main__':
         else:
             with open('%s/wordlist/%s' % (workdir, fd), 'r') as f:
                 otherwords += [w.strip() for w in f.readlines()]
-    print(len(otherwords))
     count = 0
     pword = ''
     newlist = []
