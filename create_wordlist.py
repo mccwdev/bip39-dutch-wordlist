@@ -21,6 +21,7 @@
 
 import os
 from wordfreq import wordfreq
+from wordtype import wordtype
 
 DICTFILE = 'data/dutch-norm.txt'
 BADWORDSFILE = 'data/dutch-bad.txt'
@@ -42,7 +43,6 @@ SIMILAR = (
     ('u', 'v'), ('u', 'w'),
     ('v', 'w'),
 )
-
 
 workdir = os.path.dirname(__file__)
 
@@ -87,7 +87,7 @@ def remove_similar(wordlist):
                     newlist.remove(wdel)
                 if not wnew in newlist:
                     newlist.append(wnew)
-                print("Remove %s(%d), keep %s(%d)" % (wdel, wordfreq[wdel], wnew, wordfreq[wnew]))
+                # print("Remove %s(%d), keep %s(%d)" % (wdel, wordfreq[wdel], wnew, wordfreq[wnew]))
                 stop_sim_check = True
             if stop_sim_check:
                 continue
@@ -137,6 +137,27 @@ def first_word_better(word1, word2):
         return True
     return False
 
+def find_extra_words(blacklist):
+    print(len(wordtype))
+    with open(WORDLISTDIR+'/'+OUTPUTFILE, 'r') as f:
+        words = [w.strip() for w in f.readlines()]
+    extrawords = []
+    allowedtypes = ['Z','C','Yb','Vi','Aa','Ab']
+    for nw in wordtype:
+        if nw in words:
+            continue
+        if not nw in wordfreq or wordfreq[nw] < 500:
+            continue
+        if nw in badwords:
+            continue
+        if nw in blacklist:
+            continue
+        for type in allowedtypes:
+            if type in wordtype[nw]:
+                extrawords.append(nw)
+                print(nw, wordtype[nw])
+                break
+    print(len(extrawords))
 
 if __name__ == '__main__':
     wordlist, wordprio = read_dictionary()
@@ -148,6 +169,9 @@ if __name__ == '__main__':
         else:
             with open('%s/wordlist/%s' % (workdir, fd), 'r') as f:
                 otherwords += [w.strip() for w in f.readlines()]
+    find_extra_words(otherwords)
+
+    import sys; sys.exit()
     count = 0
     pword = ''
     newlist = []

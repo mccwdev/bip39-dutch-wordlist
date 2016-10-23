@@ -22,7 +22,7 @@
 import os
 
 TYPEFILE = 'data/dutch-type.txt'
-
+ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz'
 
 def wordtypes():
     wd = os.path.dirname(__file__)
@@ -30,7 +30,13 @@ def wordtypes():
     with open('%s/%s' % (wd, TYPEFILE), 'r') as f:
         for l in f.readlines():
             f = l.split('/')
-            if len(f[0]) < 2:
+            if len(f[0]) < 3 or len(f[0]) > 8:
+                continue
+            foundstrangechar = False
+            for char in f[0]:
+                if char not in ALLOWED_CHARS:
+                    foundstrangechar = True
+            if foundstrangechar:
                 continue
             try:
                 wt.update({

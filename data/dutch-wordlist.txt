@@ -11324,3 +11324,5 @@ tijger
 ijsbeer
 dolfijn
 krokodil
+hutspot
+stampot

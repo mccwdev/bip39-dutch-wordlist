@@ -33,8 +33,6 @@ class WordlistTest(unittest.TestCase):
             self.words = [w.strip() for w in f.readlines()]
 
     def test_collision(self):
-
-
         problems = 0
         for fd in os.listdir(workdir+'/'+'wordlist'):
             if fd == DICTFILE:
@@ -49,7 +47,6 @@ class WordlistTest(unittest.TestCase):
                         print("Word '%s' also found in %s dictionary" % (word, fd))
                         problems += 1
         self.assertEqual(problems, 0)
-
 
     def test_wordslengths(self):
         words = [w for w in self.words if len(w) < 3 or len(w) > 8]

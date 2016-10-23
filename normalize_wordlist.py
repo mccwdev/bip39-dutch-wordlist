@@ -103,7 +103,7 @@ def create_normalized():
                         nt = ''
                         if data['word'] in wordtype:
                             t = wordtype[data['word']]
-                            if 'Z' in t or 'CA' in t:
+                            if 'Z' in t or 'C' or 'Yb' in t:
                                 nt = 'N'
                             elif 'Vi' in t:
                                 nt = 'WW'
