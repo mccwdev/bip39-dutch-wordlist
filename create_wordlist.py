@@ -137,25 +137,37 @@ def first_word_better(word1, word2):
         return True
     return False
 
-def find_extra_words(blacklist):
+def find_extra_words(wordlist, blacklist):
     print(len(wordtype))
     with open(WORDLISTDIR+'/'+OUTPUTFILE, 'r') as f:
         words = [w.strip() for w in f.readlines()]
+    prefixes = [w[4:] for w in words]
     extrawords = []
     allowedtypes = ['Z','C','Yb','Vi','Aa','Ab']
     for nw in wordtype:
-        if nw in words:
+        if nw[:4] in prefixes:
             continue
-        if not nw in wordfreq or wordfreq[nw] < 500:
+        if nw in wordlist:
+            continue
+        if not nw in wordfreq or wordfreq[nw] < 100:
             continue
         if nw in badwords:
             continue
         if nw in blacklist:
             continue
+        found_similar = False
+        for w in words:
+            if similar_words(nw, w):
+                found_similar = True
+                break
+        if found_similar:
+            continue
+        if nw[-2:] == 'en':
+            continue
         for type in allowedtypes:
             if type in wordtype[nw]:
                 extrawords.append(nw)
-                print(nw, wordtype[nw])
+                print(nw)
                 break
     print(len(extrawords))
 
@@ -169,9 +181,11 @@ if __name__ == '__main__':
         else:
             with open('%s/wordlist/%s' % (workdir, fd), 'r') as f:
                 otherwords += [w.strip() for w in f.readlines()]
-    find_extra_words(otherwords)
-
-    import sys; sys.exit()
+    #
+    # Use this method to generate extra words if you don't reach 2048
+    # find_extra_words(wordlist, otherwords)
+    # import sys; sys.exit()
+    #
     count = 0
     pword = ''
     newlist = []
